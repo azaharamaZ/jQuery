@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="estilos.css" rel="stylesheet">
+    <title>Racing Car</title>
 
+</head>
+<body>
+    <div class="fondo">
+        <center>
+            <h1>
+                RACING CAR 
+            </h1>
+        </center>
+        <!-- Seleccionamos el nº jugadores -->
+        <label for="dropdown" id="label">Selecciona el nº de jugadores: </label>
+        <select id="dropdown">
+            <option value="" selected disabled>Jugadores</option>
+            <option value="1">1 Jugador</option>
+            <option value="2">2 Jugadores</option>
+            <option value="3">3 Jugadores</option>
+            <option value="4">4 Jugadores</option>
+        </select>
+        <!--Muestra el resultado ganador-->
+        <div>
+            <div id="caja">
+                <h3>Resultados</h3>
+                <p class="resultado"><span></span></p>
+            </div>
+        </div>
+            <br>
+        <!--Botones dinámicos-->
+        <div>
+            <button class="boton" id="go" type="button">Correr</button>
+            <button class="boton" id="parar" type="button" >Parar</button> 
+            <button class="boton" id="reset" type="button" >Reiniciar</button>
+        </div>
+        <!--- AQUI SE MUESTRAN LOS PARTICIPANTES --->
+        <div class="terreno">
+            <div id="carPNG"></div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    
+    <!-- Comienza Script -->
+    <script>
+
+        //array img coches
+    var carImages = [
+    'car9.png',
+    'car5.png',
+    'car3.png',
+    'car4.png'
+    ];
+
+    $(document).ready(function() {
+        //Ocultamos los botonos al cargar la página
+        $("#parar").hide();
+        $("#reset").hide();
+
+        //creamos los partiicipantes
+        $('#dropdown').change(function() {
+        var numParticipants = $(this).val();
+        var carImageArray = []; // recorremos el array img
+        for (var i = 0; i < numParticipants; i++) {
+            var carImage = carImages[i % carImages.length];
+            var carImageElement = $('<div></div>').addClass('carFormat').css('background-image', 'url(' + carImage + ')');
+            carImageArray.push(carImageElement);
+        }
+
+        //y lo añadimos al doc.html
+        $('#carPNG').html(carImageArray);
+
+        }); //end change
+
+        // Boton inicio
+        $("#go").click(function() {
+            //Cambiamos el estado de los botonoes
+            $("#go").hide();
+            $("#reset").show();
+            $("#parar").show();
+
+            //Asignamos movimiento a cada partipante
+            $(".carFormat").each(function() {
+                var ancho = $(window).width() - $(this).width();
+                let vel = Math.floor(((Math.random()*10)+1)*1000);
+
+                //marcamos quien llega primero a la linea de meta
+                $(this).animate({marginLeft: ancho}, vel, function() {
+                    $(".resultado span").text('WIN!!!' + "\nHa tardado" + vel + "ms!");
+
+                });    
+            });
+        });//end click
+
+         //BOTON PARAR
+        $("#parar").click(function(){
+            $(".carFormat").stop();
+            $("#parar").hide();
+            $("#reset").show();
+            $("#go").show();
+    
+        });
+
+        //BOTON REINICIO
+        $("#reset").click(function(){ 
+            $(".carFormat").animate({marginLeft:"-0px"}, 2000);
+            $("#go").show();
+            $("#parar").show();
+        });
+
+    });
+        
+    </script>
+</body>
+</html>
